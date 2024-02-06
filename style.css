@@ -702,10 +702,6 @@ footer h4 a:hover{
 @media (max-width: 390px) {
 
     .bady {
-        font-size: 50%;
-        overflow-x: hidden;
-
-        
         height: 100vh;
         overflow-x: hidden;
         margin: 0;
