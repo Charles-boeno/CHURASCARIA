@@ -789,7 +789,7 @@ footer h4 a:hover{
     .btn-whatsapp{
         position: fixed;
         bottom: 14px;
-        right: 30px;
+        right: 60px;
         z-index: 1000;
         
     
@@ -801,7 +801,7 @@ footer h4 a:hover{
 
 
     .itens-cardapio .cardapio1{
-        width: 80vw;
+        width: 60vw;
         overflow-x: hidden;
         
     }
