@@ -702,6 +702,10 @@ footer h4 a:hover{
 @media (max-width: 390px) {
 
     .bady {
+        font-size: 50%;
+        overflow-x: hidden;
+
+        
         height: 100vh;
         overflow-x: hidden;
         margin: 0;
@@ -711,8 +715,10 @@ footer h4 a:hover{
     }
     
 
-    .conteudo-principal h1 {
+    .conteudo-principal h1 p{
        font-size: 3rem;
+        align-items: center;
+       padding-left: 50px;
     }
     .conteudo-principal h2 {
        font-size: 2rem;
