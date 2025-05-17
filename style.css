@@ -24,8 +24,6 @@ html {
 
 /* MENU */
 
-
-
 .content {
     width: 100vw;
     height: 70px;
@@ -38,35 +36,42 @@ html {
 }
 
 .logo {
-    width: 100px;
-    height: auto;
-    cursor: pointer;
+    width: auto;
+    height: 80px;
     display: flex;
     align-items: center;
 }
-
 
 .logo h3 {
    color: white;
    font-size: 1.6rem;
-
 }
 
-
 .logo img {
-    width: 100%;
-    height: 100%;
+    height: 80px;
+    width: auto;
+    max-width: 120px;
+    object-fit: contain;
+}
+
+.logo-titulo {
+    font-family: 'Indie Flower', cursive;
+    font-size: 2.2rem;
+    color: white;
+    margin-left: 10px;
+    white-space: nowrap;
 }
 
 .content .list-menu {
-    
-    width: 600px;
+    height: 80px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-left: 20px;
 }
 
 .content .list-menu li a{
+    font-family: 'Indie Flower', cursive;
     padding-top: 3rem;
     padding-bottom: 1rem;
     padding-left: 2rem;
@@ -105,7 +110,6 @@ html {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
 }
 
 .first-section h1{
@@ -138,7 +142,6 @@ html {
     margin-bottom: 4rem;
     padding-left: 130px;
 }
-
 
 .btn a h3{
     width: 430px;
@@ -311,9 +314,6 @@ html {
    width: 600px;
 }
 
-
-
-
 .contatos {
     width: 100%;
     background-color: #1f1e1f;
@@ -345,7 +345,6 @@ html {
     margin-right: 1rem;
     color: #ff0606;
 }
-
 
 .contatos-secao div a span{
     cursor: pointer;
@@ -383,7 +382,6 @@ footer h4 a:hover{
     right: 24px;
     z-index: 99;
 
-
     img{
         max-width: 74px;
         transition: transform 0.4s;
@@ -411,9 +409,6 @@ footer h4 a:hover{
     visibility: visible;
     opacity: 1;
 }
-
-
-
 
 @media (max-width: 1200px) {
 
@@ -473,7 +468,6 @@ footer h4 a:hover{
         font-size: 50%;
         overflow-x: hidden;
     }
-
 
     .content {
         justify-content: space-between;
@@ -569,8 +563,6 @@ footer h4 a:hover{
 
 }
 
-
-
 @media (max-width: 768px) {
 
     html {
@@ -645,7 +637,7 @@ footer h4 a:hover{
 
     .conteudo-principal h1 p{
        font-size: 4rem;
-       padding-left: 120px;
+       padding-left:120px;
     }
     .conteudo-principal h2 {
        font-size: 2rem;
@@ -769,11 +761,10 @@ footer h4 a:hover{
     
 }
 
-@media (max-width: 320px) {
+@media (max-width: 300px) {
 
     .bady {
-        font-size: 50%;
-        overflow-x: hidden;
+       
 
 
         height: 80vw;
