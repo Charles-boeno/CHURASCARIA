@@ -56,7 +56,7 @@ html {
 
 .logo-titulo {
     font-family: 'Indie Flower', cursive;
-    font-size: 2.2rem;
+    font-size: 5.5rem;
     color: white;
     margin-left: 10px;
     white-space: nowrap;
@@ -77,7 +77,7 @@ html {
     padding-left: 2rem;
     padding-right:1rem;
     color: rgb(255, 255, 255);
-    font-size: 1.8rem;
+    font-size: 3.8rem;
     text-transform: uppercase;
     font-weight: 400;
     transition: all 200ms ease-in;
@@ -143,8 +143,15 @@ html {
     padding-left: 130px;
 }
 
-.btn a h3{
-    width: 430px;
+.btn {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn a h3 {
+    width: 300px;
     height: 60px;
     cursor: pointer;
     text-transform: uppercase;
@@ -154,8 +161,11 @@ html {
     font-weight: 700;
     transition: all 400ms ease-in;
     margin-top: 5rem;
+    display: flex;
+    justify-content: center;
     align-items: center;
-    
+    text-align: center;
+    padding: 0;
 }
 
 .btn h3:hover {
@@ -533,7 +543,7 @@ footer h4 a:hover{
     }
 
     .content.on .list-menu li a {
-        font-size: 4rem;
+        font-size: 4.5rem;
         display: block;
     }
 
@@ -608,8 +618,19 @@ footer h4 a:hover{
 
      .btn {
          flex-direction: column;
+         gap: 10px;
+         width: 100%;
+         display: flex;
          justify-content: center;
          align-items: center;
+         margin: 0;
+     }
+
+     .btn a h3 {
+         width: 280px;
+         text-align: center;
+         padding: 0;
+         margin: 0;
      }
 
      .contatos-secao {
@@ -623,6 +644,10 @@ footer h4 a:hover{
 
     .btn {
         width: 430px;
+    }
+
+    .logo-titulo {
+        font-size: 3.5rem;
     }
 }
 
@@ -685,10 +710,17 @@ footer h4 a:hover{
         
     }
     .btn {
-        width: 90vw;
-        margin-left: -50px;
+        width: 100%;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     
+    .btn a h3 {
+        width: 280px;
+        margin: 0;
+    }
 }
 
 
@@ -755,10 +787,17 @@ footer h4 a:hover{
         
     }
     .btn {
-        width: 100vw;
-        margin-left: -30px;
+        width: 100%;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     
+    .btn a h3 {
+        width: 280px;
+        margin: 0;
+    }
 }
 
 @media (max-width: 300px) {
@@ -826,10 +865,17 @@ footer h4 a:hover{
         
     }
     .btn {
-        width: 100vw;
-        margin-left: -120px;
+        width: 100%;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     
+    .btn a h3 {
+        width: 260px;
+        margin: 0;
+    }
 }
 
 
