@@ -1,0 +1,198 @@
+[
+  {
+    "name": "Contra Filé",
+    "price": 70.00,
+    "category": "carnes",
+    "image": "./img/t-bone.jpeg",
+    "description": "Contra filé grelhado na parrilha, suculento e saboroso"
+  },
+  {
+    "name": "Alcatra",
+    "price": 65.00,
+    "category": "carnes",
+    "image": "./img/contra-parrilha1.png",
+    "description": "Alcatra grelhada na parrilha, macia e deliciosa"
+  },
+  {
+    "name": "T-Bone",
+    "price": 70.00,
+    "category": "carnes",
+    "image": "./img/t-bone.jpeg",
+    "description": "T-Bone grelhado na parrilha, com osso característico"
+  },
+  {
+    "name": "Assados Tiras",
+    "price": 60.00,
+    "category": "carnes",
+    "image": "./img/assados-tiras.png",
+    "description": "Carne assada em tiras, perfeita para acompanhamentos"
+  },
+  {
+    "name": "Alcatra Nobre",
+    "price": 60.00,
+    "category": "carnes",
+    "image": "./img/contra-parrilha1.png",
+    "description": "Alcatra nobre, corte especial da casa"
+  },
+  {
+    "name": "Picado",
+    "price": 55.00,
+    "category": "carnes",
+    "image": "./img/contra-parrilha1.png",
+    "description": "Carne picada grelhada, ideal para sanduíches"
+  },
+  {
+    "name": "Fraldinha",
+    "price": 60.00,
+    "category": "carnes",
+    "image": "./img/fraudinha.jpeg",
+    "description": "Fraldinha grelhada, saborosa e macia"
+  },
+  {
+    "name": "Maminha",
+    "price": 60.00,
+    "category": "carnes",
+    "image": "./img/contra-parrilha1.png",
+    "description": "Maminha grelhada, corte nobre e suculento"
+  },
+  {
+    "name": "Costela Bovina",
+    "price": 55.00,
+    "category": "carnes",
+    "image": "./img/costela1.png",
+    "description": "Costela bovina assada lentamente, desmancha na boca"
+  },
+  {
+    "name": "Costela Suína",
+    "price": 55.00,
+    "category": "porco",
+    "image": "./img/costela1.png",
+    "description": "Costela suína assada, saborosa e tradicional"
+  },
+  {
+    "name": "Costela de Ovelha",
+    "price": 60.00,
+    "category": "carnes",
+    "image": "./img/costela1.png",
+    "description": "Costela de ovelha, sabor único e especial"
+  },
+  {
+    "name": "Frango Simples",
+    "price": 48.00,
+    "category": "frango",
+    "image": "./img/frango1.png",
+    "description": "Frango grelhado simples, sem recheio"
+  },
+  {
+    "name": "Frango Recheado com Farofa",
+    "price": 53.00,
+    "category": "frango",
+    "image": "./img/frango1.png",
+    "description": "Frango recheado com farofa especial"
+  },
+  {
+    "name": "Pato Recheado",
+    "price": 50.00,
+    "category": "frango",
+    "image": "./img/frango1.png",
+    "description": "Pato recheado, prato especial da casa"
+  },
+  {
+    "name": "Frango Recheado Mandioca e Bacon",
+    "price": 50.00,
+    "category": "frango",
+    "image": "./img/frango1.png",
+    "description": "Frango recheado com mandioca e bacon"
+  },
+  {
+    "name": "Frango Recheado Especial",
+    "price": 55.00,
+    "category": "frango",
+    "image": "./img/frango1.png",
+    "description": "Frango recheado especial, receita exclusiva"
+  },
+  {
+    "name": "Porco Áparaguaia",
+    "price": 50.00,
+    "category": "porco",
+    "image": "./img/leitao1.png",
+    "description": "Porco áparaguaia, prato tradicional paraguaio"
+  },
+  {
+    "name": "Paleta Suína",
+    "price": 45.00,
+    "category": "porco",
+    "image": "./img/leitao1.png",
+    "description": "Paleta suína por kg, saborosa e versátil"
+  },
+  {
+    "name": "Linguiçinha",
+    "price": 3.00,
+    "category": "carnes",
+    "image": "./img/linguiça.jpg",
+    "description": "Linguiçinha grelhada na brasa, unidade"
+  },
+  {
+    "name": "Coxa Sobrecoxa",
+    "price": 8.00,
+    "category": "frango",
+    "image": "./img/linguiça.jpg",
+    "description": "Coxa sobrecoxa grelhada, unidade"
+  },
+  {
+    "name": "Tulipinha de Frango",
+    "price": 40.00,
+    "category": "frango",
+    "image": "./img/linguiça.jpg",
+    "description": "Tulipinha de frango por kg"
+  },
+  {
+    "name": "Coxinha da Asa",
+    "price": 35.00,
+    "category": "frango",
+    "image": "./img/linguiça.jpg",
+    "description": "Coxinha da asa por kg"
+  },
+  {
+    "name": "Maionese (Batata ou Mandioca)",
+    "price": 12.00,
+    "category": "acompanhamentos",
+    "image": "./img/sopa1.png",
+    "description": "Maionese caseira com batata ou mandioca"
+  },
+  {
+    "name": "Farofa",
+    "price": 8.00,
+    "category": "acompanhamentos",
+    "image": "./img/sopa1.png",
+    "description": "Farofa tradicional da casa"
+  },
+  {
+    "name": "Arroz",
+    "price": 8.00,
+    "category": "acompanhamentos",
+    "image": "./img/sopa1.png",
+    "description": "Arroz branco soltinho"
+  },
+  {
+    "name": "Mandioca com Bacon",
+    "price": 10.00,
+    "category": "acompanhamentos",
+    "image": "./img/sopa1.png",
+    "description": "Mandioca frita com bacon crocante"
+  },
+  {
+    "name": "Pão de Alho",
+    "price": 4.00,
+    "category": "acompanhamentos",
+    "image": "./img/sopa1.png",
+    "description": "Pão de alho grelhado, unidade"
+  },
+  {
+    "name": "Abacaxi Assado",
+    "price": 20.00,
+    "category": "acompanhamentos",
+    "image": "./img/abacaxi.jpg",
+    "description": "Abacaxi assado na brasa, unidade"
+  }
+] 

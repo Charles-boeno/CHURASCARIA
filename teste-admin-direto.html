@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Admin Direto - 2 Irmãos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #f31212, #d10a0a);
+            color: white;
+        }
+        .container {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .test-section {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .test-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .test-link {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 20px;
+            text-decoration: none;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.3);
+            font-weight: bold;
+        }
+        .test-link:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .credentials {
+            background: rgba(0,255,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(0,255,0,0.3);
+        }
+        .warning {
+            background: rgba(255,255,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,0,0.3);
+        }
+        .step {
+            background: rgba(0,150,255,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid rgba(0,150,255,0.3);
+        }
+        code {
+            background: rgba(0,0,0,0.3);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍖 Teste Admin - 2 Irmãos</h1>
+        
+        <div class="test-section">
+            <h2>🎯 Como Acessar o Admin</h2>
+            
+            <div class="step">
+                <h3>1️⃣ Teste Local (Recomendado)</h3>
+                <p>Clique duas vezes no arquivo <code>admin.html</code> no seu computador</p>
+            </div>
+            
+            <div class="step">
+                <h3>2️⃣ Teste no Netlify</h3>
+                <p>Acesse: <code>https://seu-site.netlify.app/admin.html</code></p>
+                <p><strong>Substitua "seu-site" pelo nome real do seu site!</strong></p>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔐 Credenciais de Login</h2>
+            <div class="credentials">
+                <p><strong>Usuário:</strong> <code>2irmaos</code></p>
+                <p><strong>Senha:</strong> <code>val2025</code></p>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🚀 Links de Teste</h2>
+            <div class="test-links">
+                <a href="admin.html" class="test-link">⚙️ Admin Local</a>
+                <a href="admin-firebase.html" class="test-link">🌐 Admin Online</a>
+                <a href="index.html" class="test-link">🏠 Página Principal</a>
+                <a href="teste-local.html" class="test-link">📋 Teste Completo</a>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔧 URLs para o Netlify</h2>
+            <div class="step">
+                <p><strong>Admin Local:</strong> <code>/admin.html</code></p>
+                <p><strong>Admin Online:</strong> <code>/admin-firebase.html</code></p>
+                <p><strong>Página Principal:</strong> <code>/index.html</code></p>
+            </div>
+        </div>
+
+        <div class="warning">
+            <h3>⚠️ Se Não Funcionar:</h3>
+            <ol>
+                <li>Verifique se todos os arquivos foram enviados para o Netlify</li>
+                <li>Teste localmente primeiro (clique duas vezes em admin.html)</li>
+                <li>Pressione F12 e veja se há erros no console</li>
+                <li>Limpe o cache do navegador (Ctrl+F5)</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h2>📞 Próximos Passos</h2>
+            <div class="step">
+                <p><strong>1.</strong> Teste localmente primeiro</p>
+                <p><strong>2.</strong> Se funcionar localmente, teste no Netlify</p>
+                <p><strong>3.</strong> Me informe se há algum erro</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

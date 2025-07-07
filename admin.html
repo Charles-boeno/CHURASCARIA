@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+    <script src="https://kit.fontawesome.com/3df637a2f2.js" crossorigin="anonymous"></script>
+    <title>Administração - 2 Irmãos Carne Assada</title>
+</head>
+<body>
+    <header>
+        <div class="content">
+            <div class="logo">
+                <img src="./img/logo-novo.png" alt="Logo Carne Assada 2 Irmãos">
+                <h3 class="logo-titulo">2Irmãos 10 ANOS</h3>
+            </div>
+            <ul class="list-menu">
+                <li><a href="index.html">Loja</a></li>
+            </ul>
+
+            <div class="menu-toggle">
+                <div class="one"></div>
+                <div class="two"></div>
+                <div class="three"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tela de Login -->
+    <section class="login-section" id="loginSection">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <img src="./img/logo-novo.png" alt="Logo" class="login-logo">
+                    <h2>Painel Administrativo</h2>
+                    <p>Faça login para acessar o sistema</p>
+                </div>
+                
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="username">Usuário:</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Senha:</label>
+                        <div class="password-input">
+                            <input type="password" id="password" name="password" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword()">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Entrar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Painel Administrativo (inicialmente oculto) -->
+    <section class="admin-panel" id="adminPanel" style="display: none;">
+        <div class="admin-header-bar">
+            <div class="admin-user-info">
+                <i class="fas fa-user-circle"></i>
+                <span id="currentUser">Administrador</span>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </button>
+        </div>
+
+        <section class="admin-hero">
+            <div class="hero-content">
+                <h1>Painel Administrativo</h1>
+                <h2>Gerencie seus produtos e preços</h2>
+            </div>
+        </section>
+
+        <section class="admin-section" id="admin">
+            <div class="container">
+                <div class="admin-header">
+                    <h2>Gerenciamento de Produtos</h2>
+                    <div class="admin-actions">
+                        <button class="add-product-btn" onclick="showAddProductModal()">
+                            <i class="fas fa-plus"></i> Adicionar Produto
+                        </button>
+                        <button class="action-btn export-btn" onclick="exportProducts()">
+                            <i class="fas fa-download"></i> Exportar
+                        </button>
+                        <button class="action-btn import-btn" onclick="importProducts()">
+                            <i class="fas fa-upload"></i> Importar
+                        </button>
+                        <button class="action-btn reset-btn" onclick="resetToDefaultProducts()">
+                            <i class="fas fa-undo"></i> Resetar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="admin-filters">
+                    <input type="text" id="searchProduct" placeholder="Buscar produto..." class="search-input">
+                    <select id="categoryFilter" class="category-select">
+                        <option value="all">Todas as Categorias</option>
+                        <option value="carnes">Carnes</option>
+                        <option value="frango">Frango</option>
+                        <option value="porco">Porco</option>
+                        <option value="acompanhamentos">Acompanhamentos</option>
+                    </select>
+                </div>
+
+                <div class="products-table-container">
+                    <table class="products-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Imagem</th>
+                                <th>Nome</th>
+                                <th>Categoria</th>
+                                <th>Preço</th>
+                                <th>Descrição</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <!-- Produtos serão carregados dinamicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <!-- Modal para adicionar/editar produto -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Adicionar Produto</h2>
+            
+            <form id="productForm">
+                <input type="hidden" id="productId">
+                
+                <div class="form-group">
+                    <label for="productName">Nome do Produto:</label>
+                    <input type="text" id="productName" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productCategory">Categoria:</label>
+                    <select id="productCategory" name="category" required>
+                        <option value="carnes">Carnes</option>
+                        <option value="frango">Frango</option>
+                        <option value="porco">Porco</option>
+                        <option value="acompanhamentos">Acompanhamentos</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productPrice">Preço (R$):</label>
+                    <input type="number" id="productPrice" name="price" step="0.01" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productImage">URL da Imagem:</label>
+                    <input type="text" id="productImage" name="image" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productDescription">Descrição:</label>
+                    <textarea id="productDescription" name="description" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="save-btn">Salvar</button>
+                    <button type="button" class="cancel-btn" onclick="closeModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de confirmação -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <h2>Confirmar Exclusão</h2>
+            <p>Tem certeza que deseja excluir este produto?</p>
+            <div class="form-actions">
+                <button onclick="confirmDelete()" class="delete-btn">Excluir</button>
+                <button onclick="closeConfirmModal()" class="cancel-btn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <h4>
+            <a href="https://mail.google.com/mail/u/1/#inbox" target="_blank">
+                © 2024, Desenvolvido por -> charles 
+            </a>
+        </h4>
+    </footer>
+
+    <!-- Firebase App (obrigatório) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <!-- Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyDfx8FHGHuEFoyijXtoolKuu1aZoLNiHZA",
+        authDomain: "irmaos-carne-assada.firebaseapp.com",
+        projectId: "irmaos-carne-assada",
+        storageBucket: "irmaos-carne-assada.firebasestorage.app",
+        messagingSenderId: "1065265268686",
+        appId: "1:1065265268686:web:cf67858cffa14547b98d9f"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+    </script>
+    <script src="./script.js"></script>
+    <script src="./admin.js"></script>
+</body>
+</html> 
