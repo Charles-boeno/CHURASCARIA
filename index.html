@@ -163,5 +163,253 @@
     </script>
     <script src="./script.js"></script>
     <script src="./loja.js"></script>
+    
+    <!-- Script de debug temporário -->
+    <script>
+        // Produtos de fallback caso o Firebase não funcione
+        const fallbackProducts = [
+            {
+                name: "Contra Filé",
+                price: 70.00,
+                category: "carnes",
+                image: "./img/t-bone.jpeg",
+                description: "Contra filé grelhado na parrilha, suculento e saboroso"
+            },
+            {
+                name: "Alcatra",
+                price: 65.00,
+                category: "carnes",
+                image: "./img/contra-parrilha1.png",
+                description: "Alcatra grelhada na parrilha, macia e deliciosa"
+            },
+            {
+                name: "T-Bone",
+                price: 70.00,
+                category: "carnes",
+                image: "./img/t-bone.jpeg",
+                description: "T-Bone grelhado na parrilha, com osso característico"
+            },
+            {
+                name: "Costela Bovina",
+                price: 55.00,
+                category: "carnes",
+                image: "./img/costela1.png",
+                description: "Costela bovina assada lentamente, desmancha na boca"
+            },
+            {
+                name: "Frango Simples",
+                price: 48.00,
+                category: "frango",
+                image: "./img/frango1.png",
+                description: "Frango grelhado simples, sem recheio"
+            },
+            {
+                name: "Frango Recheado com Farofa",
+                price: 53.00,
+                category: "frango",
+                image: "./img/frango1.png",
+                description: "Frango recheado com farofa especial"
+            },
+            {
+                name: "Pato Recheado",
+                price: 50.00,
+                category: "frango",
+                image: "./img/frango1.png",
+                description: "Pato recheado, prato especial da casa"
+            },
+            {
+                name: "Coxa Sobrecoxa",
+                price: 8.00,
+                category: "frango",
+                image: "./img/linguiça.jpg",
+                description: "Coxa sobrecoxa grelhada, unidade"
+            },
+            {
+                name: "Porco Áparaguaia",
+                price: 50.00,
+                category: "porco",
+                image: "./img/leitao1.png",
+                description: "Porco áparaguaia, prato tradicional paraguaio"
+            },
+            {
+                name: "Paleta Suína",
+                price: 45.00,
+                category: "porco",
+                image: "./img/leitao1.png",
+                description: "Paleta suína por kg, saborosa e versátil"
+            },
+            {
+                name: "Costela Suína",
+                price: 55.00,
+                category: "porco",
+                image: "./img/costela1.png",
+                description: "Costela suína assada, saborosa e tradicional"
+            },
+            {
+                name: "Farofa",
+                price: 8.00,
+                category: "acompanhamentos",
+                image: "./img/sopa1.png",
+                description: "Farofa tradicional da casa"
+            },
+            {
+                name: "Arroz",
+                price: 8.00,
+                category: "acompanhamentos",
+                image: "./img/sopa1.png",
+                description: "Arroz branco soltinho"
+            },
+            {
+                name: "Mandioca com Bacon",
+                price: 10.00,
+                category: "acompanhamentos",
+                image: "./img/sopa1.png",
+                description: "Mandioca frita com bacon crocante"
+            },
+            {
+                name: "Pão de Alho",
+                price: 4.00,
+                category: "acompanhamentos",
+                image: "./img/sopa1.png",
+                description: "Pão de alho grelhado, unidade"
+            },
+            {
+                name: "Abacaxi Assado",
+                price: 20.00,
+                category: "acompanhamentos",
+                image: "./img/abacaxi.jpg",
+                description: "Abacaxi assado na brasa, unidade"
+            }
+        ];
+
+        // Função para renderizar produtos (usada tanto pelo Firebase quanto pelo fallback)
+        function renderProductsFromArray(productsArray) {
+            const productsGrid = document.getElementById('productsGrid');
+            if (!productsGrid) {
+                console.error('Elemento productsGrid não encontrado');
+                return;
+            }
+            
+            productsGrid.innerHTML = '';
+
+            if (productsArray.length === 0) {
+                productsGrid.innerHTML = '<div class="no-products">Nenhum produto encontrado</div>';
+                return;
+            }
+
+            productsArray.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}" class="product-image" onerror="this.src='./img/logo-novo.png'">
+                    <div class="product-info">
+                        <div class="product-category">${getCategoryName(product.category)}</div>
+                        <h3 class="product-name">${product.name}</h3>
+                        <div class="product-price">R$ ${product.price.toFixed(2).replace('.', ',')}</div>
+                        <p class="product-description">${product.description}</p>
+                        <a href="https://wa.me/5545999463821?text=Olá! Gostaria de pedir ${product.name} por R$ ${product.price.toFixed(2).replace('.', ',')}" 
+                           class="order-btn" target="_blank">
+                            Pedir Agora
+                        </a>
+                    </div>
+                `;
+                productsGrid.appendChild(productCard);
+            });
+        }
+
+        function getCategoryName(category) {
+            const categories = {
+                'carnes': 'Carnes',
+                'frango': 'Frango',
+                'porco': 'Porco',
+                'acompanhamentos': 'Acompanhamentos'
+            };
+            return categories[category] || category;
+        }
+
+        // Função para filtrar produtos
+        function filterProducts(category) {
+            console.log('Filtrando por categoria:', category);
+            const currentProducts = window.currentProducts || fallbackProducts;
+            const filteredProducts = category === 'all' 
+                ? currentProducts 
+                : currentProducts.filter(product => product.category === category);
+            renderProductsFromArray(filteredProducts);
+        }
+
+        // Função para configurar os botões de filtro
+        function setupFilterButtons() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.onclick = function() {
+                    // Remover classe active de todos os botões
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // Adicionar classe active ao botão clicado
+                    this.classList.add('active');
+                    const category = this.getAttribute('data-category');
+                    filterProducts(category);
+                };
+            });
+        }
+
+        // Verificar se há produtos no Firestore após 3 segundos
+        setTimeout(() => {
+            console.log('=== DEBUG: Verificando produtos no Firestore ===');
+            if (typeof db !== 'undefined') {
+                db.collection("produtos").get().then(snapshot => {
+                    console.log('Produtos no Firestore:', snapshot.size);
+                    if (snapshot.size === 0) {
+                        console.log('⚠️ NENHUM PRODUTO ENCONTRADO NO FIRESTORE!');
+                        console.log('Usando produtos de fallback...');
+                        window.currentProducts = fallbackProducts;
+                        renderProductsFromArray(fallbackProducts);
+                        setupFilterButtons();
+                        
+                        // Importar produtos automaticamente
+                        fetch('./produtos-churrascaria.json')
+                            .then(response => response.json())
+                            .then(products => {
+                                console.log('Produtos carregados do JSON:', products.length);
+                                
+                                // Adicionar cada produto ao Firestore
+                                const promises = products.map(product => {
+                                    return db.collection("produtos").add(product);
+                                });
+                                
+                                Promise.all(promises).then(() => {
+                                    console.log('✅ Produtos importados com sucesso!');
+                                    alert('Produtos importados automaticamente! Recarregue a página.');
+                                }).catch(error => {
+                                    console.error('Erro ao importar produtos:', error);
+                                });
+                            })
+                            .catch(error => {
+                                console.error('Erro ao carregar JSON:', error);
+                            });
+                    } else {
+                        const firestoreProducts = [];
+                        snapshot.forEach(doc => {
+                            firestoreProducts.push({ id: doc.id, ...doc.data() });
+                        });
+                        window.currentProducts = firestoreProducts;
+                        renderProductsFromArray(firestoreProducts);
+                        setupFilterButtons();
+                    }
+                }).catch(error => {
+                    console.error('Erro ao verificar produtos:', error);
+                    console.log('Usando produtos de fallback devido ao erro...');
+                    window.currentProducts = fallbackProducts;
+                    renderProductsFromArray(fallbackProducts);
+                    setupFilterButtons();
+                });
+            } else {
+                console.error('Firebase não está disponível!');
+                console.log('Usando produtos de fallback...');
+                window.currentProducts = fallbackProducts;
+                renderProductsFromArray(fallbackProducts);
+                setupFilterButtons();
+            }
+        }, 3000);
+    </script>
 </body>
 </html> 
