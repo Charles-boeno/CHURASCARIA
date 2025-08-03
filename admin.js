@@ -7,16 +7,171 @@ const ADMIN_CREDENTIALS = {
 let isLoggedIn = false;
 let currentUser = '';
 
+// Produtos de fallback para a administração
+const fallbackProducts = [
+    {
+        id: '1',
+        name: "Contra Filé",
+        price: 70.00,
+        category: "carnes",
+        image: "./img/t-bone.jpeg",
+        description: "Contra filé grelhado na parrilha, suculento e saboroso"
+    },
+    {
+        id: '2',
+        name: "Alcatra",
+        price: 65.00,
+        category: "carnes",
+        image: "./img/contra-parrilha1.png",
+        description: "Alcatra grelhada na parrilha, macia e deliciosa"
+    },
+    {
+        id: '3',
+        name: "T-Bone",
+        price: 70.00,
+        category: "carnes",
+        image: "./img/t-bone.jpeg",
+        description: "T-Bone grelhado na parrilha, com osso característico"
+    },
+    {
+        id: '4',
+        name: "Costela Bovina",
+        price: 55.00,
+        category: "carnes",
+        image: "./img/costela1.png",
+        description: "Costela bovina assada lentamente, desmancha na boca"
+    },
+    {
+        id: '5',
+        name: "Frango Simples",
+        price: 48.00,
+        category: "frango",
+        image: "./img/frango1.png",
+        description: "Frango grelhado simples, sem recheio"
+    },
+    {
+        id: '6',
+        name: "Frango Recheado com Farofa",
+        price: 53.00,
+        category: "frango",
+        image: "./img/frango1.png",
+        description: "Frango recheado com farofa especial"
+    },
+    {
+        id: '7',
+        name: "Pato Recheado",
+        price: 50.00,
+        category: "frango",
+        image: "./img/frango1.png",
+        description: "Pato recheado, prato especial da casa"
+    },
+    {
+        id: '8',
+        name: "Coxa Sobrecoxa",
+        price: 8.00,
+        category: "frango",
+        image: "./img/linguiça.jpg",
+        description: "Coxa sobrecoxa grelhada, unidade"
+    },
+    {
+        id: '9',
+        name: "Porco Áparaguaia",
+        price: 50.00,
+        category: "porco",
+        image: "./img/leitao1.png",
+        description: "Porco áparaguaia, prato tradicional paraguaio"
+    },
+    {
+        id: '10',
+        name: "Paleta Suína",
+        price: 45.00,
+        category: "porco",
+        image: "./img/leitao1.png",
+        description: "Paleta suína por kg, saborosa e versátil"
+    },
+    {
+        id: '11',
+        name: "Costela Suína",
+        price: 55.00,
+        category: "porco",
+        image: "./img/costela1.png",
+        description: "Costela suína assada, saborosa e tradicional"
+    },
+    {
+        id: '12',
+        name: "Farofa",
+        price: 8.00,
+        category: "acompanhamentos",
+        image: "./img/sopa1.png",
+        description: "Farofa tradicional da casa"
+    },
+    {
+        id: '13',
+        name: "Arroz",
+        price: 8.00,
+        category: "acompanhamentos",
+        image: "./img/sopa1.png",
+        description: "Arroz branco soltinho"
+    },
+    {
+        id: '14',
+        name: "Mandioca com Bacon",
+        price: 10.00,
+        category: "acompanhamentos",
+        image: "./img/sopa1.png",
+        description: "Mandioca frita com bacon crocante"
+    },
+    {
+        id: '15',
+        name: "Pão de Alho",
+        price: 4.00,
+        category: "acompanhamentos",
+        image: "./img/sopa1.png",
+        description: "Pão de alho grelhado, unidade"
+    },
+    {
+        id: '16',
+        name: "Abacaxi Assado",
+        price: 20.00,
+        category: "acompanhamentos",
+        image: "./img/abacaxi.jpg",
+        description: "Abacaxi assado na brasa, unidade"
+    }
+];
+
 // Carregar produtos do Firestore em tempo real
 function loadProducts() {
+    console.log('Carregando produtos na administração...');
+    
+    if (!db) {
+        console.log('Firebase não disponível, usando produtos de fallback');
+        products = fallbackProducts;
+        renderProductsTable(products);
+        return;
+    }
+    
     if (window._productsListener) {
         window._productsListener(); // Remove o snapshot antigo, se existir
     }
+    
     window._productsListener = db.collection("produtos").onSnapshot(snapshot => {
-        products = [];
-        snapshot.forEach(doc => {
-            products.push({ id: doc.id, ...doc.data() });
-        });
+        console.log('Snapshot recebido na admin:', snapshot.size, 'produtos');
+        
+        if (snapshot.size === 0) {
+            console.log('Nenhum produto no Firestore, usando fallback');
+            products = fallbackProducts;
+        } else {
+            products = [];
+            snapshot.forEach(doc => {
+                products.push({ id: doc.id, ...doc.data() });
+            });
+        }
+        
+        renderProductsTable(products);
+    }, error => {
+        console.error('Erro ao carregar produtos:', error);
+        console.log('Usando produtos de fallback devido ao erro');
+        products = fallbackProducts;
         renderProductsTable(products);
     });
 }
