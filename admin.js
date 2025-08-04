@@ -380,6 +380,17 @@ function editProduct(id) {
     document.getElementById('productPrice').value = product.price;
     document.getElementById('productImage').value = product.image;
     document.getElementById('productDescription').value = product.description;
+    
+    // Mostrar preview da imagem atual
+    const previewDiv = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    if (product.image) {
+        previewImg.src = product.image;
+        previewDiv.style.display = 'block';
+    } else {
+        previewDiv.style.display = 'none';
+    }
+    
     document.getElementById('productModal').style.display = 'block';
 }
 
@@ -387,6 +398,7 @@ function editProduct(id) {
 function closeModal() {
     document.getElementById('productModal').style.display = 'none';
     currentEditId = null;
+    clearImagePreview(); // Limpar preview de imagem
 }
 
 // Função para mostrar confirmação de exclusão
@@ -415,9 +427,99 @@ function confirmDelete() {
     }
 }
 
+// Função para gerenciar upload de imagem
+function handleImageUpload() {
+    const fileInput = document.getElementById('productImageUpload');
+    const imageUrlInput = document.getElementById('productImage');
+    const previewDiv = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            // Verificar se é uma imagem
+            if (!file.type.startsWith('image/')) {
+                showNotification('Por favor, selecione apenas arquivos de imagem!', 'error');
+                return;
+            }
+            
+            // Verificar tamanho (máximo 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification('A imagem deve ter menos de 5MB!', 'error');
+                return;
+            }
+            
+            // Converter para base64
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Image = e.target.result;
+                
+                // Mostrar preview
+                previewImg.src = base64Image;
+                previewDiv.style.display = 'block';
+                
+                // Preencher campo de URL com base64
+                imageUrlInput.value = base64Image;
+                
+                showNotification('Imagem carregada com sucesso!', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+// Função para limpar preview de imagem
+function clearImagePreview() {
+    const fileInput = document.getElementById('productImageUpload');
+    const imageUrlInput = document.getElementById('productImage');
+    const previewDiv = document.getElementById('imagePreview');
+    
+    fileInput.value = '';
+    imageUrlInput.value = '';
+    previewDiv.style.display = 'none';
+}
+
+// Função para otimizar imagem antes do upload
+function optimizeImage(file) {
+    return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        img.onload = function() {
+            // Calcular novas dimensões (máximo 800x600)
+            let { width, height } = img;
+            const maxWidth = 800;
+            const maxHeight = 600;
+            
+            if (width > height) {
+                if (width > maxWidth) {
+                    height = (height * maxWidth) / width;
+                    width = maxWidth;
+                }
+            } else {
+                if (height > maxHeight) {
+                    width = (width * maxHeight) / height;
+                    height = maxHeight;
+                }
+            }
+            
+            // Redimensionar
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Converter para base64 com qualidade 0.8
+            const optimizedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+            resolve(optimizedBase64);
+        };
+        
+        img.src = URL.createObjectURL(file);
+    });
+}
+
 // Função para salvar produto
 async function saveProduct(formData) {
-    alert('Atualizado!');
     const productData = {
         name: formData.get('name').trim(),
         category: formData.get('category'),
@@ -425,26 +527,44 @@ async function saveProduct(formData) {
         image: formData.get('image').trim(),
         description: formData.get('description').trim()
     };
+    
     console.log('Salvando produto:', currentEditId, productData);
+    
     if (!productData.name || !productData.category || !productData.price || !productData.image || !productData.description) {
         showNotification('Todos os campos são obrigatórios!', 'error');
         return;
     }
+    
     if (productData.price <= 0) {
         showNotification('O preço deve ser maior que zero!', 'error');
         return;
     }
-    if (currentEditId) {
-        const ok = await updateProduct(currentEditId, productData);
-        if (ok) {
-            showNotification(`Produto atualizado com sucesso!`, 'success');
+    
+    try {
+        if (currentEditId) {
+            // Atualizar produto existente
+            const ok = await updateProduct(currentEditId, productData);
+            if (ok) {
+                showNotification(`Produto atualizado com sucesso!`, 'success');
+                closeModal();
+            } else {
+                showNotification('Erro ao atualizar produto!', 'error');
+            }
+            currentEditId = null;
+        } else {
+            // Adicionar novo produto
+            if (db) {
+                await addProduct(productData);
+                showNotification(`Produto adicionado com sucesso!`, 'success');
+                closeModal();
+            } else {
+                showNotification('Erro: Firebase não disponível!', 'error');
+            }
         }
-        currentEditId = null;
-    } else {
-        addProduct(productData);
-        showNotification(`Produto adicionado com sucesso!`, 'success');
+    } catch (error) {
+        console.error('Erro ao salvar produto:', error);
+        showNotification('Erro ao salvar produto: ' + error.message, 'error');
     }
-    closeModal();
 }
 
 // Função para mostrar notificação
@@ -517,6 +637,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData(this);
         saveProduct(formData);
     });
+    
+    // Event listener para upload de imagem
+    handleImageUpload();
     
     // Fechar modais ao clicar fora
     window.addEventListener('click', function(e) {

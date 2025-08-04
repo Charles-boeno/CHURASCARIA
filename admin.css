@@ -352,6 +352,56 @@ header {
     background: #c82333;
 }
 
+/* Estilos para upload de imagem */
+.form-group input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 2px dashed #ddd;
+    border-radius: 5px;
+    background: #f9f9f9;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.form-group input[type="file"]:hover {
+    border-color: #007bff;
+    background: #f0f8ff;
+}
+
+.form-group input[type="file"]:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+#imagePreview {
+    text-align: center;
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 5px;
+    border: 1px solid #e9ecef;
+}
+
+#previewImg {
+    max-width: 200px;
+    max-height: 200px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.upload-info {
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.upload-info i {
+    margin-right: 5px;
+    color: #007bff;
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
     .login-container {
@@ -733,4 +783,16 @@ header {
 
 .admin-panel .admin-section {
     margin-top: 0;
+} 
+
+/* Responsivo para mobile */
+@media (max-width: 768px) {
+    .form-group input[type="file"] {
+        font-size: 16px; /* Evita zoom no iOS */
+    }
+    
+    #previewImg {
+        max-width: 150px;
+        max-height: 150px;
+    }
 } 
