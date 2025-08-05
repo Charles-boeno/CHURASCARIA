@@ -245,16 +245,19 @@ header {
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.5);
+    overflow-y: auto;
 }
 
 .modal-content {
     background-color: white;
-    margin: 5% auto;
+    margin: 2% auto;
     padding: 3rem;
     border-radius: 12px;
     width: 90%;
     max-width: 600px;
     position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .close {
@@ -264,6 +267,7 @@ header {
     font-size: 3rem;
     cursor: pointer;
     color: #aaa;
+    z-index: 1001;
 }
 
 .close:hover {
@@ -275,6 +279,7 @@ header {
     color: #333;
     margin-bottom: 2rem;
     font-family: 'Indie Flower', cursive;
+    padding-right: 3rem; /* Espaço para o X */
 }
 
 .form-group {
@@ -312,6 +317,12 @@ header {
     gap: 1.5rem;
     justify-content: flex-end;
     margin-top: 3rem;
+    padding-bottom: 1rem;
+    position: sticky;
+    bottom: 0;
+    background: white;
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
 }
 
 .save-btn,
@@ -489,13 +500,28 @@ header {
     }
     
     .modal-content {
-        margin: 10% auto;
+        margin: 5% auto;
         padding: 2rem;
         width: 95%;
+        max-height: 85vh;
+    }
+    
+    .modal-content h2 {
+        font-size: 2rem;
+        padding-right: 2rem;
     }
     
     .form-actions {
         flex-direction: column;
+        position: static;
+        margin-top: 2rem;
+    }
+    
+    .save-btn,
+    .cancel-btn {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.4rem;
     }
 }
 
@@ -568,12 +594,14 @@ header {
     }
     
     .modal-content {
-        margin: 15% auto;
+        margin: 2% auto;
         padding: 1.5rem;
+        max-height: 90vh;
     }
     
     .modal-content h2 {
-        font-size: 2rem;
+        font-size: 1.8rem;
+        padding-right: 2rem;
     }
     
     .form-group label {
@@ -585,6 +613,20 @@ header {
     .form-group textarea {
         font-size: 1.3rem;
         padding: 1rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        position: static;
+        margin-top: 2rem;
+        padding: 1rem 0;
+    }
+    
+    .save-btn,
+    .cancel-btn {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.4rem;
     }
 }
 
