@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Firebase Admin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .product-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Teste Firebase Admin</h1>
+        
+        <div class="test-section info">
+            <h3>📊 Status do Firebase</h3>
+            <div id="firebaseStatus">Verificando...</div>
+        </div>
+        
+        <div class="test-section">
+            <h3>➕ Adicionar Produto de Teste</h3>
+            <form id="testForm">
+                <input type="text" id="testName" placeholder="Nome do produto" value="Teste - " required>
+                <input type="number" id="testPrice" placeholder="Preço" value="25.00" step="0.01" required>
+                <select id="testCategory" required>
+                    <option value="carnes">Carnes</option>
+                    <option value="frango">Frango</option>
+                    <option value="porco">Porco</option>
+                    <option value="acompanhamentos">Acompanhamentos</option>
+                </select>
+                <input type="text" id="testImage" placeholder="URL da imagem" value="./img/logo-novo.png" required>
+                <textarea id="testDescription" placeholder="Descrição" value="Produto de teste" required></textarea>
+                <button type="submit">➕ Adicionar Produto</button>
+            </form>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔧 Testes de Funcionalidade</h3>
+            <button onclick="testAddProduct()">➕ Testar Adicionar Produto</button>
+            <button onclick="testUpdateProduct()">✏️ Testar Editar Produto</button>
+            <button onclick="testDeleteProduct()">🗑️ Testar Excluir Produto</button>
+            <button onclick="checkProducts()">📋 Verificar Produtos</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>📋 Produtos no Firebase</h3>
+            <div id="productsList">Carregando...</div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔗 Links Importantes</h3>
+            <a href="admin.html" target="_blank">🔧 Administração</a> |
+            <a href="index.html" target="_blank">🏠 Site Principal</a>
+        </div>
+    </div>
+
+    <!-- Firebase App (obrigatório) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <!-- Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDfx8FHGHuEFoyijXtoolKuu1aZoLNiHZA",
+            authDomain: "irmaos-carne-assada.firebaseapp.com",
+            projectId: "irmaos-carne-assada",
+            storageBucket: "irmaos-carne-assada.firebasestorage.app",
+            messagingSenderId: "1065265268686",
+            appId: "1:1065265268686:web:cf67858cffa14547b98d9f"
+        };
+
+        let db;
+        let products = [];
+
+        // Inicializar Firebase
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            document.getElementById('firebaseStatus').innerHTML = '<span style="color: green;">✅ Firebase conectado com sucesso!</span>';
+        } catch (error) {
+            document.getElementById('firebaseStatus').innerHTML = '<span style="color: red;">❌ Erro ao conectar Firebase: ' + error.message + '</span>';
+        }
+
+        // Verificar produtos
+        function checkProducts() {
+            if (!db) {
+                alert('Firebase não está disponível!');
+                return;
+            }
+
+            db.collection("produtos").get().then(snapshot => {
+                products = [];
+                snapshot.forEach(doc => {
+                    products.push({ id: doc.id, ...doc.data() });
+                });
+                
+                const productsList = document.getElementById('productsList');
+                if (products.length === 0) {
+                    productsList.innerHTML = '<p style="color: orange;">⚠️ Nenhum produto encontrado no Firebase</p>';
+                } else {
+                    productsList.innerHTML = `<p style="color: green;">✅ ${products.length} produtos encontrados:</p>`;
+                    products.forEach(product => {
+                        productsList.innerHTML += `
+                            <div class="product-item">
+                                <strong>${product.name}</strong> - R$ ${product.price}<br>
+                                <small>Categoria: ${product.category}</small>
+                            </div>
+                        `;
+                    });
+                }
+            }).catch(error => {
+                document.getElementById('productsList').innerHTML = '<p style="color: red;">❌ Erro ao carregar produtos: ' + error.message + '</p>';
+            });
+        }
+
+        // Testar adicionar produto
+        async function testAddProduct() {
+            if (!db) {
+                alert('Firebase não está disponível!');
+                return;
+            }
+
+            const testProduct = {
+                name: "Teste - " + new Date().toLocaleTimeString(),
+                price: 25.00,
+                category: "carnes",
+                image: "./img/logo-novo.png",
+                description: "Produto de teste criado em " + new Date().toLocaleString()
+            };
+
+            try {
+                const docRef = await db.collection("produtos").add(testProduct);
+                alert('✅ Produto de teste adicionado com sucesso! ID: ' + docRef.id);
+                checkProducts();
+            } catch (error) {
+                alert('❌ Erro ao adicionar produto: ' + error.message);
+            }
+        }
+
+        // Testar atualizar produto
+        async function testUpdateProduct() {
+            if (!db || products.length === 0) {
+                alert('Nenhum produto disponível para editar!');
+                return;
+            }
+
+            const product = products[0];
+            const updatedProduct = {
+                ...product,
+                name: product.name + " (Editado)",
+                price: product.price + 1
+            };
+
+            try {
+                await db.collection("produtos").doc(product.id).set(updatedProduct, { merge: true });
+                alert('✅ Produto atualizado com sucesso!');
+                checkProducts();
+            } catch (error) {
+                alert('❌ Erro ao atualizar produto: ' + error.message);
+            }
+        }
+
+        // Testar excluir produto
+        async function testDeleteProduct() {
+            if (!db || products.length === 0) {
+                alert('Nenhum produto disponível para excluir!');
+                return;
+            }
+
+            if (confirm('Tem certeza que deseja excluir o primeiro produto?')) {
+                const product = products[0];
+                try {
+                    await db.collection("produtos").doc(product.id).delete();
+                    alert('✅ Produto excluído com sucesso!');
+                    checkProducts();
+                } catch (error) {
+                    alert('❌ Erro ao excluir produto: ' + error.message);
+                }
+            }
+        }
+
+        // Formulário de teste
+        document.getElementById('testForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const testProduct = {
+                name: document.getElementById('testName').value,
+                price: parseFloat(document.getElementById('testPrice').value),
+                category: document.getElementById('testCategory').value,
+                image: document.getElementById('testImage').value,
+                description: document.getElementById('testDescription').value
+            };
+
+            try {
+                const docRef = await db.collection("produtos").add(testProduct);
+                alert('✅ Produto adicionado com sucesso! ID: ' + docRef.id);
+                checkProducts();
+            } catch (error) {
+                alert('❌ Erro ao adicionar produto: ' + error.message);
+            }
+        });
+
+        // Carregar produtos ao iniciar
+        window.addEventListener('load', checkProducts);
+    </script>
+</body>
+</html> 

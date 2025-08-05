@@ -177,8 +177,16 @@ function loadProducts() {
 }
 
 // Adicionar produto
-function addProduct(product) {
-    db.collection("produtos").add(product);
+async function addProduct(product) {
+    try {
+        const docRef = await db.collection("produtos").add(product);
+        console.log('Produto adicionado com sucesso! ID:', docRef.id);
+        return true;
+    } catch (error) {
+        console.error('Erro ao adicionar produto:', error);
+        showNotification('Erro ao adicionar produto: ' + error.message, 'error');
+        return false;
+    }
 }
 
 // Editar produto
@@ -196,8 +204,16 @@ async function updateProduct(id, product) {
 }
 
 // Remover produto
-function deleteProduct(id) {
-    db.collection("produtos").doc(id).delete();
+async function deleteProduct(id) {
+    try {
+        await db.collection("produtos").doc(id).delete();
+        console.log('Produto excluído com sucesso!');
+        return true;
+    } catch (error) {
+        console.error('Erro ao excluir produto:', error);
+        showNotification('Erro ao excluir produto: ' + error.message, 'error');
+        return false;
+    }
 }
 
 // Verificar se já está logado
@@ -419,11 +435,13 @@ function closeConfirmModal() {
 }
 
 // Função para confirmar exclusão
-function confirmDelete() {
+async function confirmDelete() {
     if (currentDeleteId) {
-        deleteProduct(currentDeleteId);
-        closeConfirmModal();
-        showNotification('Produto excluído com sucesso!', 'success');
+        const success = await deleteProduct(currentDeleteId);
+        if (success) {
+            closeConfirmModal();
+            showNotification('Produto excluído com sucesso!', 'success');
+        }
     }
 }
 
@@ -554,9 +572,13 @@ async function saveProduct(formData) {
         } else {
             // Adicionar novo produto
             if (db) {
-                await addProduct(productData);
-                showNotification(`Produto adicionado com sucesso!`, 'success');
-                closeModal();
+                const success = await addProduct(productData);
+                if (success) {
+                    showNotification(`Produto adicionado com sucesso!`, 'success');
+                    closeModal();
+                } else {
+                    showNotification('Erro ao adicionar produto!', 'error');
+                }
             } else {
                 showNotification('Erro: Firebase não disponível!', 'error');
             }
