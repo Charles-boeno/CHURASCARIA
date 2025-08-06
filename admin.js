@@ -6,6 +6,7 @@ const ADMIN_CREDENTIALS = {
 
 let isLoggedIn = false;
 let currentUser = '';
+let products = []; // Declaração global da variável products
 
 // Produtos de fallback para a administração
 const fallbackProducts = [
@@ -419,29 +420,46 @@ function closeModal() {
 
 // Função para mostrar confirmação de exclusão
 function showDeleteConfirm(id) {
+    console.log('🔍 showDeleteConfirm chamada com ID:', id);
+    console.log('🔍 isLoggedIn:', isLoggedIn);
+    
     if (!isLoggedIn) {
         showNotification('Você precisa estar logado para realizar esta ação!', 'error');
         return;
     }
     
     currentDeleteId = id;
+    console.log('🔍 currentDeleteId definido como:', currentDeleteId);
     document.getElementById('confirmModal').style.display = 'block';
+    console.log('🔍 Modal de confirmação aberto');
 }
 
 // Função para fechar modal de confirmação
 function closeConfirmModal() {
+    console.log('🔍 closeConfirmModal chamada');
     document.getElementById('confirmModal').style.display = 'none';
     currentDeleteId = null;
 }
 
 // Função para confirmar exclusão
 async function confirmDelete() {
+    console.log('🔍 confirmDelete chamada');
+    console.log('🔍 currentDeleteId:', currentDeleteId);
+    
     if (currentDeleteId) {
+        console.log('🔍 Tentando excluir produto com ID:', currentDeleteId);
         const success = await deleteProduct(currentDeleteId);
+        console.log('🔍 Resultado da exclusão:', success);
+        
         if (success) {
             closeConfirmModal();
             showNotification('Produto excluído com sucesso!', 'success');
+        } else {
+            showNotification('Erro ao excluir produto!', 'error');
         }
+    } else {
+        console.log('🔍 currentDeleteId é null ou undefined');
+        showNotification('ID do produto não encontrado!', 'error');
     }
 }
 
