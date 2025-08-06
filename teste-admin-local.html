@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Admin Local</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .product-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 400px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Teste Admin Local (Sem Firebase)</h1>
+        
+        <div class="test-section info">
+            <h3>📊 Status</h3>
+            <div>✅ Teste local funcionando - Sem Firebase</div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔧 Testes de Funcionalidade</h3>
+            <button onclick="addProduct()">➕ Adicionar Produto</button>
+            <button onclick="showProducts()">📋 Ver Produtos</button>
+            <button onclick="testModal()">🔍 Testar Modal</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>📋 Produtos Locais</h3>
+            <div id="productsList">Carregando...</div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔗 Links Importantes</h3>
+            <a href="admin.html" target="_blank">🔧 Administração</a> |
+            <a href="index.html" target="_blank">🏠 Site Principal</a> |
+            <a href="teste-admin-simples.html" target="_blank">🧪 Teste Firebase</a>
+        </div>
+    </div>
+
+    <!-- Modal de teste -->
+    <div id="testModal" class="modal">
+        <div class="modal-content">
+            <h2>Teste de Modal</h2>
+            <p>Este é um teste do modal de confirmação.</p>
+            <button onclick="closeTestModal()">Fechar</button>
+        </div>
+    </div>
+
+    <script>
+        // Produtos de teste locais
+        let products = [
+            {
+                id: '1',
+                name: "Contra Filé",
+                price: 70.00,
+                category: "carnes",
+                image: "./img/t-bone.jpeg",
+                description: "Contra filé grelhado na parrilha"
+            },
+            {
+                id: '2',
+                name: "Frango Simples",
+                price: 48.00,
+                category: "frango",
+                image: "./img/frango1.png",
+                description: "Frango grelhado simples"
+            },
+            {
+                id: '3',
+                name: "Porco Áparaguaia",
+                price: 50.00,
+                category: "porco",
+                image: "./img/leitao1.png",
+                description: "Porco áparaguaia tradicional"
+            }
+        ];
+
+        // Função para mostrar produtos
+        function showProducts() {
+            console.log('🔍 Mostrando produtos locais...');
+            const productsList = document.getElementById('productsList');
+            
+            if (products.length === 0) {
+                productsList.innerHTML = '<p style="color: orange;">⚠️ Nenhum produto encontrado</p>';
+            } else {
+                productsList.innerHTML = `<p style="color: green;">✅ ${products.length} produtos encontrados:</p>`;
+                productsList.innerHTML += `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Categoria</th>
+                                <th>Preço</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${products.map(product => `
+                                <tr>
+                                    <td>${product.id}</td>
+                                    <td>${product.name}</td>
+                                    <td>${product.category}</td>
+                                    <td>R$ ${product.price.toFixed(2)}</td>
+                                    <td>
+                                        <button onclick="editProduct('${product.id}')" style="background: #007bff;">✏️ Editar</button>
+                                        <button onclick="deleteProduct('${product.id}')" style="background: #dc3545;">🗑️ Excluir</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }
+        }
+
+        // Função para adicionar produto
+        function addProduct() {
+            console.log('🔍 Adicionando produto local...');
+            const newProduct = {
+                id: (products.length + 1).toString(),
+                name: "Novo Produto - " + new Date().toLocaleTimeString(),
+                price: Math.random() * 100 + 10,
+                category: "carnes",
+                image: "./img/logo-novo.png",
+                description: "Produto adicionado em " + new Date().toLocaleString()
+            };
+            
+            products.push(newProduct);
+            alert('✅ Produto adicionado com sucesso!');
+            showProducts();
+        }
+
+        // Função para editar produto
+        function editProduct(id) {
+            console.log('🔍 Editando produto:', id);
+            const product = products.find(p => p.id === id);
+            if (product) {
+                product.name = product.name + " (Editado)";
+                product.price = product.price + 1;
+                alert('✅ Produto editado com sucesso!');
+                showProducts();
+            }
+        }
+
+        // Função para excluir produto
+        function deleteProduct(id) {
+            console.log('🔍 Excluindo produto:', id);
+            if (confirm('Tem certeza que deseja excluir este produto?')) {
+                products = products.filter(p => p.id !== id);
+                alert('✅ Produto excluído com sucesso!');
+                showProducts();
+            }
+        }
+
+        // Testar modal
+        function testModal() {
+            console.log('🔍 Testando modal...');
+            document.getElementById('testModal').style.display = 'block';
+        }
+
+        function closeTestModal() {
+            console.log('🔍 Fechando modal...');
+            document.getElementById('testModal').style.display = 'none';
+        }
+
+        // Carregar produtos ao iniciar
+        window.addEventListener('load', function() {
+            console.log('🔍 Página carregada, mostrando produtos...');
+            showProducts();
+        });
+    </script>
+</body>
+</html> 

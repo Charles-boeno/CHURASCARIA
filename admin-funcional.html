@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Funcional - 2 Irmãos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .header {
+            background: #1f1e1f;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2rem;
+            color: #f31212;
+        }
+        
+        .status-bar {
+            background: #333;
+            color: white;
+            padding: 0.5rem 2rem;
+            font-size: 0.9rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .controls {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .controls h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        
+        button:hover { background: #0056b3; }
+        
+        .success { background: #28a745; }
+        .success:hover { background: #218838; }
+        
+        .danger { background: #dc3545; }
+        .danger:hover { background: #c82333; }
+        
+        .warning { background: #ffc107; color: #333; }
+        .warning:hover { background: #e0a800; }
+        
+        .products-table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .product-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .form-actions {
+            margin-top: 1.5rem;
+            text-align: right;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1001;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .notification.success { background: #28a745; }
+        .notification.error { background: #dc3545; }
+        .notification.warning { background: #ffc107; color: #333; }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🍖 Admin - 2 Irmãos</h1>
+        <div>
+            <span id="connectionStatus">Verificando conexão...</span>
+        </div>
+    </div>
+    
+    <div class="status-bar">
+        <span id="statusMessage">Carregando...</span>
+    </div>
+    
+    <div class="container">
+        <div class="controls">
+            <h2>🔧 Controles</h2>
+            <button onclick="addProduct()" class="success">➕ Adicionar Produto</button>
+            <button onclick="refreshProducts()">🔄 Atualizar Lista</button>
+            <button onclick="testFirebase()" class="warning">🔥 Testar Firebase</button>
+            <button onclick="clearLocal()" class="danger">🗑️ Limpar Local</button>
+        </div>
+        
+        <div class="products-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Imagem</th>
+                        <th>Nome</th>
+                        <th>Categoria</th>
+                        <th>Preço</th>
+                        <th>Descrição</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="productsTableBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 2rem;">
+                            Carregando produtos...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Modal para adicionar/editar produto -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Adicionar Produto</h2>
+            
+            <form id="productForm">
+                <input type="hidden" id="productId">
+                
+                <div class="form-group">
+                    <label for="productName">Nome do Produto:</label>
+                    <input type="text" id="productName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productCategory">Categoria:</label>
+                    <select id="productCategory" required>
+                        <option value="carnes">Carnes</option>
+                        <option value="frango">Frango</option>
+                        <option value="porco">Porco</option>
+                        <option value="acompanhamentos">Acompanhamentos</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productPrice">Preço (R$):</label>
+                    <input type="number" id="productPrice" step="0.01" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productImage">URL da Imagem:</label>
+                    <input type="text" id="productImage" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productDescription">Descrição:</label>
+                    <textarea id="productDescription" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" onclick="closeModal()" class="danger">Cancelar</button>
+                    <button type="submit" class="success">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase App (obrigatório) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <!-- Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDfx8FHGHuEFoyijXtoolKuu1aZoLNiHZA",
+            authDomain: "irmaos-carne-assada.firebaseapp.com",
+            projectId: "irmaos-carne-assada",
+            storageBucket: "irmaos-carne-assada.firebasestorage.app",
+            messagingSenderId: "1065265268686",
+            appId: "1:1065265268686:web:cf67858cffa14547b98d9f"
+        };
+
+        let db;
+        let products = [];
+        let currentEditId = null;
+        let useFirebase = false;
+
+        // Inicializar Firebase
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            useFirebase = true;
+            updateStatus('✅ Firebase conectado', 'success');
+        } catch (error) {
+            updateStatus('⚠️ Firebase não disponível - usando modo local', 'warning');
+        }
+
+        // Função para atualizar status
+        function updateStatus(message, type = 'info') {
+            document.getElementById('statusMessage').textContent = message;
+            document.getElementById('connectionStatus').textContent = message;
+        }
+
+        // Função para mostrar notificação
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Carregar produtos
+        async function loadProducts() {
+            try {
+                if (useFirebase && db) {
+                    // Tentar carregar do Firebase
+                    const snapshot = await db.collection("produtos").get();
+                    products = [];
+                    snapshot.forEach(doc => {
+                        products.push({ id: doc.id, ...doc.data() });
+                    });
+                    updateStatus(`✅ ${products.length} produtos carregados do Firebase`);
+                } else {
+                    // Usar produtos locais
+                    const localProducts = localStorage.getItem('localProducts');
+                    if (localProducts) {
+                        products = JSON.parse(localProducts);
+                    } else {
+                        // Produtos padrão
+                        products = [
+                            {
+                                id: '1',
+                                name: "Contra Filé",
+                                price: 70.00,
+                                category: "carnes",
+                                image: "./img/t-bone.jpeg",
+                                description: "Contra filé grelhado na parrilha"
+                            },
+                            {
+                                id: '2',
+                                name: "Frango Simples",
+                                price: 48.00,
+                                category: "frango",
+                                image: "./img/frango1.png",
+                                description: "Frango grelhado simples"
+                            }
+                        ];
+                    }
+                    updateStatus(`✅ ${products.length} produtos carregados localmente`);
+                }
+                renderProducts();
+            } catch (error) {
+                console.error('Erro ao carregar produtos:', error);
+                updateStatus('❌ Erro ao carregar produtos', 'error');
+                showNotification('Erro ao carregar produtos: ' + error.message, 'error');
+            }
+        }
+
+        // Renderizar produtos
+        function renderProducts() {
+            const tbody = document.getElementById('productsTableBody');
+            tbody.innerHTML = '';
+
+            if (products.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 2rem;">
+                            Nenhum produto encontrado
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            products.forEach(product => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${product.id}</td>
+                    <td><img src="${product.image}" alt="${product.name}" class="product-image" onerror="this.src='./img/logo-novo.png'"></td>
+                    <td>${product.name}</td>
+                    <td>${product.category}</td>
+                    <td>R$ ${product.price.toFixed(2).replace('.', ',')}</td>
+                    <td>${product.description}</td>
+                    <td>
+                        <button onclick="editProduct('${product.id}')" class="warning">✏️ Editar</button>
+                        <button onclick="deleteProduct('${product.id}')" class="danger">🗑️ Excluir</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Adicionar produto
+        async function addProduct() {
+            currentEditId = null;
+            document.getElementById('modalTitle').textContent = 'Adicionar Produto';
+            document.getElementById('productForm').reset();
+            document.getElementById('productModal').style.display = 'block';
+        }
+
+        // Editar produto
+        function editProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            currentEditId = id;
+            document.getElementById('modalTitle').textContent = 'Editar Produto';
+            document.getElementById('productId').value = product.id;
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productCategory').value = product.category;
+            document.getElementById('productPrice').value = product.price;
+            document.getElementById('productImage').value = product.image;
+            document.getElementById('productDescription').value = product.description;
+            
+            document.getElementById('productModal').style.display = 'block';
+        }
+
+        // Excluir produto
+        async function deleteProduct(id) {
+            if (!confirm('Tem certeza que deseja excluir este produto?')) return;
+
+            try {
+                if (useFirebase && db) {
+                    await db.collection("produtos").doc(id).delete();
+                    showNotification('Produto excluído do Firebase!', 'success');
+                } else {
+                    products = products.filter(p => p.id !== id);
+                    localStorage.setItem('localProducts', JSON.stringify(products));
+                    showNotification('Produto excluído localmente!', 'success');
+                }
+                loadProducts();
+            } catch (error) {
+                console.error('Erro ao excluir produto:', error);
+                showNotification('Erro ao excluir produto: ' + error.message, 'error');
+            }
+        }
+
+        // Salvar produto
+        async function saveProduct(formData) {
+            const productData = {
+                name: formData.get('name').trim(),
+                category: formData.get('category'),
+                price: parseFloat(formData.get('price')),
+                image: formData.get('image').trim(),
+                description: formData.get('description').trim()
+            };
+
+            if (!productData.name || !productData.category || !productData.price || !productData.image || !productData.description) {
+                showNotification('Todos os campos são obrigatórios!', 'error');
+                return;
+            }
+
+            try {
+                if (currentEditId) {
+                    // Editar produto existente
+                    if (useFirebase && db) {
+                        await db.collection("produtos").doc(currentEditId).set(productData, { merge: true });
+                        showNotification('Produto atualizado no Firebase!', 'success');
+                    } else {
+                        const index = products.findIndex(p => p.id === currentEditId);
+                        if (index !== -1) {
+                            products[index] = { ...products[index], ...productData };
+                            localStorage.setItem('localProducts', JSON.stringify(products));
+                            showNotification('Produto atualizado localmente!', 'success');
+                        }
+                    }
+                } else {
+                    // Adicionar novo produto
+                    if (useFirebase && db) {
+                        const docRef = await db.collection("produtos").add(productData);
+                        showNotification('Produto adicionado ao Firebase!', 'success');
+                    } else {
+                        const newId = (products.length + 1).toString();
+                        products.push({ id: newId, ...productData });
+                        localStorage.setItem('localProducts', JSON.stringify(products));
+                        showNotification('Produto adicionado localmente!', 'success');
+                    }
+                }
+                
+                closeModal();
+                loadProducts();
+            } catch (error) {
+                console.error('Erro ao salvar produto:', error);
+                showNotification('Erro ao salvar produto: ' + error.message, 'error');
+            }
+        }
+
+        // Fechar modal
+        function closeModal() {
+            document.getElementById('productModal').style.display = 'none';
+            currentEditId = null;
+        }
+
+        // Atualizar produtos
+        function refreshProducts() {
+            loadProducts();
+        }
+
+        // Testar Firebase
+        async function testFirebase() {
+            if (!db) {
+                showNotification('Firebase não está disponível!', 'error');
+                return;
+            }
+
+            try {
+                const testProduct = {
+                    name: "Teste - " + new Date().toLocaleTimeString(),
+                    price: 25.00,
+                    category: "carnes",
+                    image: "./img/logo-novo.png",
+                    description: "Produto de teste"
+                };
+
+                const docRef = await db.collection("produtos").add(testProduct);
+                showNotification('✅ Teste do Firebase funcionou! ID: ' + docRef.id, 'success');
+                loadProducts();
+            } catch (error) {
+                showNotification('❌ Erro no teste do Firebase: ' + error.message, 'error');
+            }
+        }
+
+        // Limpar dados locais
+        function clearLocal() {
+            if (confirm('Tem certeza que deseja limpar todos os dados locais?')) {
+                localStorage.removeItem('localProducts');
+                products = [];
+                renderProducts();
+                showNotification('Dados locais limpos!', 'success');
+            }
+        }
+
+        // Event listeners
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            saveProduct(formData);
+        });
+
+        // Fechar modal ao clicar fora
+        window.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                closeModal();
+            }
+        });
+
+        // Carregar produtos ao iniciar
+        window.addEventListener('load', function() {
+            loadProducts();
+        });
+    </script>
+</body>
+</html> 
