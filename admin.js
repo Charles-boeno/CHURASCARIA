@@ -7,138 +7,7 @@ const ADMIN_CREDENTIALS = {
 let isLoggedIn = false;
 let currentUser = '';
 let products = []; // Declaração global da variável products
-
-// Produtos de fallback para a administração
-const fallbackProducts = [
-    {
-        id: '1',
-        name: "Contra Filé",
-        price: 70.00,
-        category: "carnes",
-        image: "./img/t-bone.jpeg",
-        description: "Contra filé grelhado na parrilha, suculento e saboroso"
-    },
-    {
-        id: '2',
-        name: "Alcatra",
-        price: 65.00,
-        category: "carnes",
-        image: "./img/contra-parrilha1.png",
-        description: "Alcatra grelhada na parrilha, macia e deliciosa"
-    },
-    {
-        id: '3',
-        name: "T-Bone",
-        price: 70.00,
-        category: "carnes",
-        image: "./img/t-bone.jpeg",
-        description: "T-Bone grelhado na parrilha, com osso característico"
-    },
-    {
-        id: '4',
-        name: "Costela Bovina",
-        price: 55.00,
-        category: "carnes",
-        image: "./img/costela1.png",
-        description: "Costela bovina assada lentamente, desmancha na boca"
-    },
-    {
-        id: '5',
-        name: "Frango Simples",
-        price: 48.00,
-        category: "frango",
-        image: "./img/frango1.png",
-        description: "Frango grelhado simples, sem recheio"
-    },
-    {
-        id: '6',
-        name: "Frango Recheado com Farofa",
-        price: 53.00,
-        category: "frango",
-        image: "./img/frango1.png",
-        description: "Frango recheado com farofa especial"
-    },
-    {
-        id: '7',
-        name: "Pato Recheado",
-        price: 50.00,
-        category: "frango",
-        image: "./img/frango1.png",
-        description: "Pato recheado, prato especial da casa"
-    },
-    {
-        id: '8',
-        name: "Coxa Sobrecoxa",
-        price: 8.00,
-        category: "frango",
-        image: "./img/linguiça.jpg",
-        description: "Coxa sobrecoxa grelhada, unidade"
-    },
-    {
-        id: '9',
-        name: "Porco Áparaguaia",
-        price: 50.00,
-        category: "porco",
-        image: "./img/leitao1.png",
-        description: "Porco áparaguaia, prato tradicional paraguaio"
-    },
-    {
-        id: '10',
-        name: "Paleta Suína",
-        price: 45.00,
-        category: "porco",
-        image: "./img/leitao1.png",
-        description: "Paleta suína por kg, saborosa e versátil"
-    },
-    {
-        id: '11',
-        name: "Costela Suína",
-        price: 55.00,
-        category: "porco",
-        image: "./img/costela1.png",
-        description: "Costela suína assada, saborosa e tradicional"
-    },
-    {
-        id: '12',
-        name: "Farofa",
-        price: 8.00,
-        category: "acompanhamentos",
-        image: "./img/sopa1.png",
-        description: "Farofa tradicional da casa"
-    },
-    {
-        id: '13',
-        name: "Arroz",
-        price: 8.00,
-        category: "acompanhamentos",
-        image: "./img/sopa1.png",
-        description: "Arroz branco soltinho"
-    },
-    {
-        id: '14',
-        name: "Mandioca com Bacon",
-        price: 10.00,
-        category: "acompanhamentos",
-        image: "./img/sopa1.png",
-        description: "Mandioca frita com bacon crocante"
-    },
-    {
-        id: '15',
-        name: "Pão de Alho",
-        price: 4.00,
-        category: "acompanhamentos",
-        image: "./img/sopa1.png",
-        description: "Pão de alho grelhado, unidade"
-    },
-    {
-        id: '16',
-        name: "Abacaxi Assado",
-        price: 20.00,
-        category: "acompanhamentos",
-        image: "./img/abacaxi.jpg",
-        description: "Abacaxi assado na brasa, unidade"
-    }
-];
+let useFirebase = false;
 
 // Carregar produtos do Firestore em tempo real
 function loadProducts() {
@@ -146,10 +15,13 @@ function loadProducts() {
     
     if (!db) {
         console.log('Firebase não disponível, usando produtos de fallback');
-        products = fallbackProducts;
-        renderProductsTable(products);
+        useFirebase = false;
+        loadLocalProducts();
         return;
     }
+    
+    // Tentar usar Firebase primeiro
+    useFirebase = true;
     
     if (window._productsListener) {
         window._productsListener(); // Remove o snapshot antigo, se existir
@@ -160,29 +32,65 @@ function loadProducts() {
         
         if (snapshot.size === 0) {
             console.log('Nenhum produto no Firestore, usando fallback');
-            products = fallbackProducts;
+            loadLocalProducts();
         } else {
             products = [];
             snapshot.forEach(doc => {
                 products.push({ id: doc.id, ...doc.data() });
             });
+            renderProductsTable(products);
         }
-        
-        renderProductsTable(products);
     }, error => {
         console.error('Erro ao carregar produtos:', error);
         console.log('Usando produtos de fallback devido ao erro');
-        products = fallbackProducts;
-        renderProductsTable(products);
+        useFirebase = false;
+        loadLocalProducts();
     });
+}
+
+// Carregar produtos locais
+function loadLocalProducts() {
+    const localProducts = localStorage.getItem('localProducts');
+    if (localProducts) {
+        products = JSON.parse(localProducts);
+    } else {
+        // Produtos padrão
+        products = [
+            {
+                id: '1',
+                name: "Contra Filé",
+                price: 70.00,
+                category: "carnes",
+                image: "./img/t-bone.jpeg",
+                description: "Contra filé grelhado na parrilha"
+            },
+            {
+                id: '2',
+                name: "Frango Simples",
+                price: 48.00,
+                category: "frango",
+                image: "./img/frango1.png",
+                description: "Frango grelhado simples"
+            }
+        ];
+    }
+    renderProductsTable(products);
 }
 
 // Adicionar produto
 async function addProduct(product) {
     try {
-        const docRef = await db.collection("produtos").add(product);
-        console.log('Produto adicionado com sucesso! ID:', docRef.id);
-        return true;
+        if (useFirebase && db) {
+            const docRef = await db.collection("produtos").add(product);
+            console.log('Produto adicionado ao Firebase! ID:', docRef.id);
+            return true;
+        } else {
+            const newId = (products.length + 1).toString();
+            products.push({ id: newId, ...product });
+            localStorage.setItem('localProducts', JSON.stringify(products));
+            console.log('Produto adicionado localmente!');
+            return true;
+        }
     } catch (error) {
         console.error('Erro ao adicionar produto:', error);
         showNotification('Erro ao adicionar produto: ' + error.message, 'error');
@@ -194,8 +102,17 @@ async function addProduct(product) {
 async function updateProduct(id, product) {
     console.log('Tentando atualizar:', id, product);
     try {
-        await db.collection("produtos").doc(id).set(product, { merge: true });
-        console.log('Atualizado com sucesso!');
+        if (useFirebase && db) {
+            await db.collection("produtos").doc(id).set(product, { merge: true });
+            console.log('Atualizado no Firebase com sucesso!');
+        } else {
+            const index = products.findIndex(p => p.id === id);
+            if (index !== -1) {
+                products[index] = { ...products[index], ...product };
+                localStorage.setItem('localProducts', JSON.stringify(products));
+                console.log('Atualizado localmente com sucesso!');
+            }
+        }
         return true;
     } catch (error) {
         showNotification('Erro ao atualizar produto: ' + error.message, 'error');
@@ -207,8 +124,14 @@ async function updateProduct(id, product) {
 // Remover produto
 async function deleteProduct(id) {
     try {
-        await db.collection("produtos").doc(id).delete();
-        console.log('Produto excluído com sucesso!');
+        if (useFirebase && db) {
+            await db.collection("produtos").doc(id).delete();
+            console.log('Produto excluído do Firebase!');
+        } else {
+            products = products.filter(p => p.id !== id);
+            localStorage.setItem('localProducts', JSON.stringify(products));
+            console.log('Produto excluído localmente!');
+        }
         return true;
     } catch (error) {
         console.error('Erro ao excluir produto:', error);
@@ -319,6 +242,17 @@ function getCategoryName(category) {
 function renderProductsTable(filteredProducts = products) {
     const tableBody = document.getElementById('productsTableBody');
     tableBody.innerHTML = '';
+
+    if (filteredProducts.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 2rem;">
+                    Nenhum produto encontrado
+                </td>
+            </tr>
+        `;
+        return;
+    }
 
     filteredProducts.forEach(product => {
         const row = document.createElement('tr');
@@ -454,6 +388,7 @@ async function confirmDelete() {
         if (success) {
             closeConfirmModal();
             showNotification('Produto excluído com sucesso!', 'success');
+            loadProducts(); // Recarregar produtos
         } else {
             showNotification('Erro ao excluir produto!', 'error');
         }
@@ -589,16 +524,12 @@ async function saveProduct(formData) {
             currentEditId = null;
         } else {
             // Adicionar novo produto
-            if (db) {
-                const success = await addProduct(productData);
-                if (success) {
-                    showNotification(`Produto adicionado com sucesso!`, 'success');
-                    closeModal();
-                } else {
-                    showNotification('Erro ao adicionar produto!', 'error');
-                }
+            const success = await addProduct(productData);
+            if (success) {
+                showNotification(`Produto adicionado com sucesso!`, 'success');
+                closeModal();
             } else {
-                showNotification('Erro: Firebase não disponível!', 'error');
+                showNotification('Erro ao adicionar produto!', 'error');
             }
         }
     } catch (error) {
@@ -705,16 +636,6 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Função para resetar produtos para valores padrão
-function resetToDefaultProducts() {
-    if (confirm('Tem certeza que deseja resetar todos os produtos para os valores padrão? Esta ação não pode ser desfeita.')) {
-        products = getDefaultProducts();
-        saveProductsToStorage();
-        renderProductsTable();
-        showNotification('Produtos resetados para valores padrão!', 'success');
-    }
-}
-
 // Função para exportar produtos
 function exportProducts() {
     const dataStr = JSON.stringify(products, null, 2);
@@ -744,11 +665,17 @@ function importProducts() {
                 try {
                     const importedProducts = JSON.parse(e.target.result);
                     if (Array.isArray(importedProducts)) {
-                        // Salvar cada produto no Firestore
-                        importedProducts.forEach(product => {
-                            db.collection("produtos").add(product);
+                        // Salvar cada produto no Firebase ou local
+                        importedProducts.forEach(async product => {
+                            if (useFirebase && db) {
+                                await db.collection("produtos").add(product);
+                            } else {
+                                products.push(product);
+                                localStorage.setItem('localProducts', JSON.stringify(products));
+                            }
                         });
-                        showNotification('Produtos importados para o Firestore com sucesso!', 'success');
+                        showNotification('Produtos importados com sucesso!', 'success');
+                        loadProducts();
                     } else {
                         showNotification('Arquivo inválido!', 'error');
                     }
