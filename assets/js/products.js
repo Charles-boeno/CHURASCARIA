@@ -38,8 +38,8 @@ window.STORE_PRODUCTS = Object.freeze([
     { id: 'linguica-queijo-coalho', name: 'Linguiça de Queijo Coalho', price: 25, unit: 'por unidade', category: 'linguicas', image: './assets/images/linguica-queijo-coalho.webp', description: 'Linguiça recheada com queijo coalho, dourada na brasa.' },
 
     // Aves
-    { id: 'frango-tradicional', name: 'Frango Assado Tradicional', price: 48, unit: 'por unidade', category: 'frango', image: './assets/images/frango-assado.png', description: 'Frango inteiro assado, temperado e dourado.' },
-    { id: 'frango-farofa', name: 'Frango Recheado com Farofa', price: 53, unit: 'por unidade', category: 'frango', image: './assets/images/frango-farofa.jpg', description: 'Frango inteiro com recheio de farofa da casa.' },
+    { id: 'frango-tradicional', name: 'Frango Assado Tradicional', price: 50, unit: 'por unidade', category: 'frango', image: './assets/images/frango-assado.png', description: 'Frango inteiro assado, temperado e dourado.' },
+    { id: 'frango-farofa', name: 'Frango Recheado com Farofa', price: 55, unit: 'por unidade', category: 'frango', image: './assets/images/frango-farofa.jpg', description: 'Frango inteiro com recheio de farofa da casa.' },
     { id: 'frango-mandioca-bacon', name: 'Frango Recheado com Mandioca e Bacon', price: 53, unit: 'por unidade', category: 'frango', image: './assets/images/frango-mandioca-bacon.webp', description: 'Frango inteiro com recheio de mandioca e bacon.' },
     { id: 'coxa-sobrecoxa', name: 'Coxa Assada', price: 8, unit: 'por unidade', category: 'frango', image: './assets/images/coxa-assada.webp', description: 'Coxa de frango assada e dourada, vendida por unidade.' },
     { id: 'tulipinha-frango', name: 'Tulipa de Frango', price: 35, unit: 'por kg', category: 'frango', image: './assets/images/tulipa-frango.webp', description: 'Asinhas de frango temperadas e assadas, vendidas por quilo.' },
